@@ -5,3 +5,5 @@ ray
 seaborn
 tensorboard
 torch
+tqdm
+PyYaml

@@ -70,17 +70,17 @@ class MuZero:
 
         # Manage GPUs
         if self.config.max_num_gpus == 0 and (
-            self.config.selfplay_on_gpu
-            or self.config.train_on_gpu
-            or self.config.reanalyse_on_gpu
+                self.config.selfplay_on_gpu
+                or self.config.train_on_gpu
+                or self.config.reanalyse_on_gpu
         ):
             raise ValueError(
                 "Inconsistent MuZeroConfig: max_num_gpus = 0 but GPU requested by selfplay_on_gpu or train_on_gpu or reanalyse_on_gpu."
             )
         if (
-            self.config.selfplay_on_gpu
-            or self.config.train_on_gpu
-            or self.config.reanalyse_on_gpu
+                self.config.selfplay_on_gpu
+                or self.config.train_on_gpu
+                or self.config.reanalyse_on_gpu
         ):
             total_gpus = (
                 self.config.max_num_gpus
@@ -93,7 +93,8 @@ class MuZero:
         if 1 < self.num_gpus:
             self.num_gpus = math.floor(self.num_gpus)
 
-        ray.init(num_gpus=total_gpus, ignore_reinit_error=True)
+        # ray.init(num_gpus=total_gpus, ignore_reinit_error=True)
+        ray.init(num_gpus=total_gpus, ignore_reinit_error=True, local_mode=True)
 
         # Checkpoint and replay buffer used to initialize workers
         self.checkpoint = {
@@ -142,10 +143,10 @@ class MuZero:
         # Manage GPUs
         if 0 < self.num_gpus:
             num_gpus_per_worker = self.num_gpus / (
-                self.config.train_on_gpu
-                + self.config.num_workers * self.config.selfplay_on_gpu
-                + log_in_tensorboard * self.config.selfplay_on_gpu
-                + self.config.use_last_model_value * self.config.reanalyse_on_gpu
+                    self.config.train_on_gpu
+                    + self.config.num_workers * self.config.selfplay_on_gpu
+                    + log_in_tensorboard * self.config.selfplay_on_gpu
+                    + self.config.use_last_model_value * self.config.reanalyse_on_gpu
             )
             if 1 < num_gpus_per_worker:
                 num_gpus_per_worker = math.floor(num_gpus_per_worker)
@@ -186,7 +187,7 @@ class MuZero:
             )
             for seed in range(self.config.num_workers)
         ]
-
+        self.Game.render()
         # Launch workers
         [
             self_play_worker.continuous_self_play.remote(
@@ -367,7 +368,7 @@ class MuZero:
         self.shared_storage_worker = None
 
     def test(
-        self, render=True, opponent=None, muzero_player=None, num_tests=1, num_gpus=0
+            self, render=True, opponent=None, muzero_player=None, num_tests=1, num_gpus=0
     ):
         """
         Test the model in a dedicated thread.
@@ -394,7 +395,7 @@ class MuZero:
         ).remote(self.checkpoint, self.Game, self.config, numpy.random.randint(10000))
         results = []
         for i in range(num_tests):
-            print(f"Testing {i+1}/{num_tests}")
+            print(f"Testing {i + 1}/{num_tests}")
             results.append(
                 ray.get(
                     self_play_worker.play_game.remote(
@@ -493,7 +494,7 @@ class CPUActor:
 
 
 def hyperparameter_search(
-    game_name, parametrization, budget, parallel_experiments, num_tests
+        game_name, parametrization, budget, parallel_experiments, num_tests
 ):
     """
     Search for hyperparameters by launching parallel experiments.
@@ -531,7 +532,7 @@ def hyperparameter_search(
         while 0 < budget or any(running_experiments):
             for i, experiment in enumerate(running_experiments):
                 if experiment and experiment.config.training_steps <= ray.get(
-                    experiment.shared_storage_worker.get_info.remote("training_step")
+                        experiment.shared_storage_worker.get_info.remote("training_step")
                 ):
                     experiment.terminate_workers()
                     result = experiment.test(False, num_tests=num_tests)

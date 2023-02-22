@@ -1,0 +1,79 @@
+train:
+  conv_layers:
+    layer_1:
+      in_channels: 2
+      out_channels: 4
+      kernel_size: (3, 3)
+      batch_norm: None
+      drop_out_rate: 0.2
+      max_pool: None
+    layer_2:
+      in_channels: 4,
+      out_channels: 8,
+      kernel_size: (3, 3),
+      batch_norm: None,
+      drop_out_rate: 0.2,
+      max_pool: None
+    layer_3:
+      in_channels: 8,
+      out_channels: 16,
+      kernell_size: (3, 3),
+      batch_norm: None,
+      drop_out_rate: 0.2,
+      max_pool: None
+  linear_layers:
+    layer_1:
+      input_dim: None,
+      output_dim: 100,
+      drop_out_rate: 0.2,
+      batch_norm: None
+    layer_2:
+      input_dim: 100,
+      output_dim: 100,
+      drop_out_rate: 0.2,
+      batch_norm: None
+    layer_3:
+      input_dim: 100,
+      output_dim: 100,
+      drop_out_rate: 0.2,
+      batch_norm: None
+
+test:
+  conv_layers:
+    layer_1:
+      in_channels: 2
+      out_channels: 4
+      kernel_size: (3, 3)
+      batch_norm: None
+      drop_out_rate: 0.2
+      max_pool: None
+    layer_2:
+      in_channels: 4,
+      out_channels: 8,
+      kernel_size: (3, 3),
+      batch_norm: None,
+      drop_out_rate: 0.2,
+      max_pool: None
+    layer_3:
+      in_channels: 8,
+      out_channels: 16,
+      kernell_size: (3, 3),
+      batch_norm: None,
+      drop_out_rate: 0.2,
+      max_pool: None
+  linear_layers:
+    layer_1:
+      input_dim: None,
+      output_dim: 100,
+      drop_out_rate: 0.2,
+      batch_norm: None
+    layer_2:
+      input_dim: 100,
+      output_dim: 100,
+      drop_out_rate: 0.2,
+      batch_norm: None
+    layer_3:
+      input_dim: 100,
+      output_dim: 100,
+      drop_out_rate: 0.2,
+      batch_norm: None
