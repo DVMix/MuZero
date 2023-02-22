@@ -16,9 +16,9 @@ else:
     device = torch.device('cpu')
 
 
-def conv_block(in_channels, out_channels, kernell_size, batch_norm=None,
+def conv_block(in_channels, out_channels, kernel_size, batch_norm=None,
                drop_out_rate=None, max_pool=None):
-    block_list = [torch.nn.Conv2d(in_channels, out_channels, kernel_size=kernell_size, stride=1)]
+    block_list = [torch.nn.Conv2d(in_channels, out_channels, kernel_size=kernel_size, stride=1)]
 
     if batch_norm:
         block_list.append(torch.nn.BatchNorm2d(out_channels))
@@ -81,14 +81,12 @@ class Model(torch.nn.Module):
 
         layers_list = []
         for key, val in conv_layers.items():
-            layers_list += conv_block(val['in_channels'], val['out_channels'], val['kernel_size'],
-                                      val['batch_norm'], val['drop_out_rate'], val['max_pool'])
+            layers_list += conv_block(**val)
 
         layers_list = torch.nn.Sequential(*layers_list)
         self.conv_blocks = torch.nn.ModuleList(layers_list)
         self.conv_output_channels = val['out_channels']
-
-        self.adapt = torch.nn.AdaptiveMaxPool2d((adaptive_pooling_size, adaptive_pooling_size))
+        self.adapt = torch.nn.AdaptiveMaxPool2d(adaptive_pooling_size)
 
         if linear_layers:
             layers_list = []
@@ -135,7 +133,11 @@ class Model(torch.nn.Module):
         point_one_policy = self.output_activation(point_one_policy)
         point_two_policy = self.output_activation(point_two_policy)
 
-        return {'point_one_policy': point_one_policy, 'point_two_policy': point_two_policy, 'value': value}
+        return {
+            'point_one_policy': point_one_policy,
+            'point_two_policy': point_two_policy,
+            'value': value
+        }
 
 
 def test():
